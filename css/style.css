@@ -1,0 +1,418 @@
+* {
+  backface-visibility: hidden;
+}
+
+body {
+  font-family: Inter, system-ui, sans-serif;
+  margin: 0;
+  background: #fafafa;
+  color: #111;
+  opacity: 0;
+  transform: scale(0.985);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+body.page-enter {
+  opacity: 1;
+  transform: scale(1);
+}
+
+body.page-exit {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+header {
+  text-align: center;
+  padding: 24px;
+  border-bottom: 1px solid #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+header h1 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.header-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.header-nav a {
+  color: #666;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.header-nav a.active {
+  color: #111;
+  font-weight: 700;
+  background: #f2f2f2;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+#album-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 24px;
+  padding: 24px;
+}
+
+.album-card {
+  text-align: center;
+  padding: 12px;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+  transition: transform .15s ease, box-shadow .15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.album-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+}
+
+.album-card img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 6px;
+}
+
+.album-card h3 {
+  font-size: 16px;
+  margin: 4px 0 0;
+}
+
+.album-card p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.open-btn {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #111;
+  color: white;
+  text-decoration: none;
+  margin-top: 6px;
+}
+
+.album-card .score {
+  min-height: 22px;
+}
+
+.album-view {
+  max-width: 720px;
+  margin: auto;
+  margin-top: 16px;
+  padding: 20px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.08);
+}
+
+.album-view img {
+  width: 240px;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.15);
+}
+
+.album-hero {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.album-meta h2 {
+  margin: 0 0 6px 0;
+}
+
+.album-meta p {
+  margin: 0 0 12px 0;
+  color: #666;
+}
+
+.album-rating h3 {
+  margin: 0 0 6px 0;
+}
+
+.rating-row button,
+.track-buttons button {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  margin: 2px;
+}
+
+.rating-row button:hover,
+.track-buttons button:hover {
+  background: #f2f2f2;
+}
+
+.tracklist {
+  margin-top: 16px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.stars {
+  display: inline-flex;
+  gap: 2px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.star {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 18px;
+  color: #ddd;
+}
+
+.star span {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: transform 0.1s ease, color 0.1s ease;
+}
+
+.star .half {
+  left: 0;
+  width: 50%;
+  overflow: hidden;
+}
+
+.star .full {
+  right: 0;
+  width: 100%;
+}
+
+.star .active {
+  color: #f5c518;
+}
+
+.star span:hover {
+  transform: translateY(-50%) scale(1.15);
+}
+
+.track.is-interlude {
+  opacity: 0.45;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: 1fr 120px 40px;
+  align-items: center;
+  gap: 12px;
+}
+
+.track .stars {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 120px;
+}
+
+.track .track-title {
+  display: flex;
+  align-items: center;
+}
+
+.interlude-toggle {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color .15s ease, transform .1s ease;
+}
+
+.interlude-toggle:hover {
+  color: #111;
+  transform: scale(1.1);
+}
+
+.disc h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #444;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chart-list {
+  max-width: 900px;
+  margin: auto;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
+}
+
+.chart-left {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.rank {
+  font-weight: bold;
+  width: 28px;
+}
+
+.track-name {
+  font-weight: 600;
+}
+
+.track-meta {
+  font-size: 13px;
+  color: #666;
+}
+
+.track-score {
+  font-weight: bold;
+}
+.search-bar {
+  width: 100%;
+  max-width: 1000px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.readonly .half,
+.readonly .full {
+  pointer-events: none;
+  cursor: default;
+}
+
+.match-label {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+#top-albums {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 0 18px;
+}
+
+.top-album {
+  display: flex;
+  align-items: center;
+  padding: 14px 18px;
+  background: white;
+  border-radius: 14px;
+  text-decoration: none;
+  color: #111;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.top-album-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+
+.top-album-rank {
+  width: 36px;
+  text-align: right;
+  font-weight: 700;
+  opacity: 0.6;
+}
+
+.top-album img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.top-album .info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.top-album .info h3 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.top-album .info p {
+  font-size: 14px;
+  margin: 0;
+  color: #666;
+}
+
+.top-album .meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-old(root) {
+  opacity: 0;
+}
+
+::view-transition-new(root) {
+  opacity: 1;
+}
