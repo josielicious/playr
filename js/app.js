@@ -1,10 +1,112 @@
+const users = JSON.parse(localStorage.getItem("users")) || [
+  { id: "default", name: "Guest" }
+];
+
+function saveUsers() {
+  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("currentUser", currentUser);
+}
+
+function userKey(key) {
+  return `user_${currentUser}_${key}`;
+}
+
+function getRating(key) {
+  return parseFloat(localStorage.getItem(userKey(key))) || 0;
+}
+
+function saveRating(key, value) {
+  localStorage.setItem(userKey(key), value);
+  render();
+}
+
+function isInterlude(key) {
+  return localStorage.getItem(userKey("interlude_" + key)) === "true";
+}
+
+function toggleInterlude(key) {
+  const fullKey = userKey("interlude_" + key);
+  localStorage.setItem(fullKey, !isInterlude(key));
+  render();
+}
+
+let currentUser =
+  localStorage.getItem("currentUser") || users[0].id;
+
 const grid = document.getElementById("album-grid");
 const page = document.getElementById("album-page");
 const searchInput = document.getElementById("search");
+const toggle = document.getElementById("theme-toggle");
+const userSelect = document.getElementById("user-select");
+const addUserBtn = document.getElementById("add-user");
+
+function renderUsers() {
+  userSelect.innerHTML = "";
+
+  users.forEach(u => {
+    const opt = document.createElement("option");
+    opt.value = u.id;
+    opt.textContent = u.name;
+    opt.selected = u.id === currentUser;
+    userSelect.appendChild(opt);
+  });
+}
+
+userSelect.addEventListener("change", e => {
+  currentUser = e.target.value;
+  saveUsers();
+  render();
+});
+
+addUserBtn.addEventListener("click", () => {
+  const name = prompt("User name?");
+  if (!name) return;
+
+  const id = name.toLowerCase().replace(/\s+/g, "_");
+  users.push({ id, name });
+  currentUser = id;
+  saveUsers();
+  renderUsers();
+  render();
+});
+
+renderUsers();
+
+function setTheme(dark) {
+  document.body.classList.toggle("dark", dark);
+  localStorage.setItem("theme", dark ? "dark" : "light");
+
+  if (toggle) {
+    toggle.innerHTML = dark
+      ? `<i class="fa-solid fa-sun"></i>`
+      : `<i class="fa-solid fa-moon"></i>`;
+  }
+}
+
+const savedTheme = localStorage.getItem("theme");
+const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+setTheme(savedTheme ? savedTheme === "dark" : prefersDark);
+
+const mql = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+if (mql && !localStorage.getItem("theme")) {
+  const applyPref = (e) => setTheme(e.matches);
+  if (mql.addEventListener) mql.addEventListener("change", applyPref);
+  else mql.addListener(applyPref);
+}
+
+if (toggle) {
+  toggle.addEventListener("click", () => {
+    setTheme(!document.body.classList.contains("dark"));
+  });
+}
 
 if (searchInput) {
+  let last = "";
   searchInput.addEventListener("input", e => {
-    render(e.target.value);
+    if (e.target.value !== last) {
+      last = e.target.value;
+      render(last);
+    }
   });
 }
 
@@ -47,18 +149,27 @@ function getAlbumScore(album) {
 }
 
 function generateStars(key, rating, readonly = false) {
-  let html = `<div class="stars${readonly ? ' readonly' : ''}">`;
+  const wrapperClass = `stars${readonly ? ' readonly' : ''}`;
+  let html = `<div class="${wrapperClass}">`;
 
   for (let i = 1; i <= 5; i++) {
     const full = rating >= i;
     const half = rating >= i - 0.5 && rating < i;
 
-    html += `
-      <span class="star">
-        <span class="half ${half ? "active" : ""}" onclick="saveRating('${key}', ${i - 0.5})">★</span>
-        <span class="full ${full ? "active" : ""}" onclick="saveRating('${key}', ${i})">★</span>
-      </span>
-    `;
+    let icon;
+    if (full) icon = '<i class="fa-solid fa-star"></i>';
+    else if (half) icon = '<i class="fa-solid fa-star-half-stroke"></i>';
+    else icon = '<i class="fa-regular fa-star"></i>';
+
+    html += `<span class="star">${icon}`;
+
+    if (!readonly) {
+      // left half = x.5, right half = x
+      html += `<button class="hit" onclick="saveRating('${key}', ${i - 0.5})" aria-label="rate ${i - 0.5}"></button>`;
+      html += `<button class="hit right" onclick="saveRating('${key}', ${i})" aria-label="rate ${i}"></button>`;
+    }
+
+    html += `</span>`;
   }
 
   html += `</div>`;
@@ -86,6 +197,20 @@ function getAlbumStats(album) {
     avg: count ? (total / count) : 0,
     count
   };
+}
+
+function highlightMatch(text, query) {
+  const q = query.trim();
+  if (!q) return text;
+
+  const index = text.toLowerCase().indexOf(q.toLowerCase());
+  if (index === -1) return text;
+
+  return (
+    text.slice(0, index) +
+    `<mark>${text.slice(index, index + q.length)}</mark>` +
+    text.slice(index + q.length)
+  );
 }
 
 function render(searchQuery = "") {
@@ -129,8 +254,9 @@ function render(searchQuery = "") {
       div.className = "album-card";
       div.innerHTML = `
         <img src="${album.cover}">
-        <h3>${album.title}</h3>
-        <p>${album.artist}</p>
+        <h3>${query ? highlightMatch(album.title, searchQuery) : album.title}</h3>
+        <p>${query ? highlightMatch(album.artist, searchQuery) : album.artist}</p>
+
 
         ${query && matchLabel ? `<div class="match-label">${matchLabel}</div>` : ""}
 
