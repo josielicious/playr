@@ -33,11 +33,17 @@ function createDiscElement(discIdx, discName = 'Disc 1', trackNames = []) {
 
     const addTrackBtn = document.createElement('button');
     addTrackBtn.textContent = 'Add Track';
-    addTrackBtn.addEventListener('click', (e) => { e.preventDefault(); addTrackToDisc(disc); });
+    addTrackBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        addTrackToDisc(disc);
+    });
 
     const removeDiscBtn = document.createElement('button');
     removeDiscBtn.textContent = 'Remove Disc';
-    removeDiscBtn.addEventListener('click', (e) => { e.preventDefault(); disc.remove(); });
+    removeDiscBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        disc.remove();
+    });
 
     header.appendChild(nameInput);
     header.appendChild(addTrackBtn);
@@ -87,7 +93,11 @@ function renderPreview(obj) {
             const h = document.createElement('h4');
             h.textContent = d.name || 'Disc';
             const ol = document.createElement('ol');
-            (d.tracks || []).forEach(t => { const li = document.createElement('li'); li.textContent = t; ol.appendChild(li); });
+            (d.tracks || []).forEach(t => {
+                const li = document.createElement('li');
+                li.textContent = t;
+                ol.appendChild(li);
+            });
             p.appendChild(h);
             p.appendChild(ol);
         });
@@ -136,8 +146,8 @@ function formatForDataJS(album) {
     lines.push(`  cover: ${JSON.stringify(cover)},`);
     lines.push('  discs: [');
     discs.forEach((d, di) => {
-        lines.push('    {');
-        lines.push(`      name: ${JSON.stringify(d.name || `Disc ${di+1}`)},`);
+                lines.push('    {');
+                lines.push(`      name: ${JSON.stringify(d.name || `Disc ${di+1}`)},`);
         lines.push('      tracks: [');
         (d.tracks || []).forEach((t, ti) => {
             const comma = (ti === (d.tracks.length - 1)) ? '' : ',';
@@ -172,15 +182,20 @@ function downloadOutput() {
 
 function addTrack() {
     const container = el('tracks');
+    if (!container) return;
     const idx = container.querySelectorAll('.track-item').length;
     container.appendChild(createTrackRow(idx));
 }
 
+function addTrackToDisc(discEl) {
+    if (!discEl) return;
+    const tracksContainer = discEl.querySelector('.tracks-list');
+    if (!tracksContainer) return;
+    const idx = tracksContainer.querySelectorAll('.track-item').length;
+    tracksContainer.appendChild(createTrackRow(idx));
+}
+
 function init() {
-    el('add-track').addEventListener('click', (e) => {
-        e.preventDefault();
-        addTrack();
-    });
     el('generate').addEventListener('click', (e) => {
         e.preventDefault();
         generate();
@@ -190,15 +205,12 @@ function init() {
         copyOutput();
     });
     el('download').addEventListener('click', (e) => { e.preventDefault(); downloadOutput(); });
-    const copyBtn = el('copy');
-    if (copyBtn) copyBtn.addEventListener('click', (e) => { e.preventDefault(); copyOutput(); });
     const addDiscBtn = el('add-disc');
     if (addDiscBtn) addDiscBtn.addEventListener('click', (e) => { e.preventDefault(); const discs = el('discs'); const idx = discs.querySelectorAll('.disc').length; discs.appendChild(createDiscElement(idx)); });
-    // seed with 3 tracks
-    // seed with one disc and three tracks
+
     const discs = el('discs');
-    const first = createDiscElement(0, 'Disc 1', ['Track 1', 'Track 2', 'Track 3']);
-    discs.appendChild(first);
+    const first = createDiscElement(0, 'Disc 1', ['Track 1']);
+    if (discs) discs.appendChild(first);
 }
 
 window.addEventListener('DOMContentLoaded', init);
