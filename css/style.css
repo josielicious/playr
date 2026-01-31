@@ -458,27 +458,3 @@ mark {
   background: var(--hover);
   color: var(--text);
 }
-
-.user-switcher {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.user-switcher select {
-  background: var(--panel);
-  color: var(--text);
-  border-radius: 6px;
-  padding: 4px 6px;
-}
-
-.user-switcher button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 6px 8px;
-  border-radius: 8px;
-  color: var(--muted);
-  transition: background .15s ease, color .15s ease;
-}
