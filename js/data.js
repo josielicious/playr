@@ -1,6 +1,29 @@
 const albums = [{
+        id: 0,
+        title: "Sequence 01",
+        artist: "f5ve",
+        year: 2025,
+        cover: "img/albums/sequence_01.jpg",
+        discs: [{
+            name: "Disc 1",
+            tracks: [
+                "Initiate Sequence 01",
+                "Underground",
+                "Magic Clock",
+                "UFO",
+                "Firetruck",
+                "Lettuce",
+                "Sugar Free Venom",
+                "Television",
+                "Bow Chika Wow Wow",
+                "Jump",
+                "リア女 (Real Girl)"
+            ]
+        }]
+    },
+    {
         id: 1,
-        title: "Sequence 0.15",
+        title: "Sequence 0.15 (Dreaming Of The 2nd 1st Impact - Consequences Of Fate Redux)",
         artist: "f5ve",
         year: 2025,
         cover: "img/albums/sequence_0.15.jpg",
@@ -17,7 +40,7 @@ const albums = [{
                     "Television",
                     "Bow Chika Wow Wow",
                     "Jump",
-                    "Real Girl",
+                    "リア女 (Real Girl)",
                     "Wish",
                     "Snowman",
                     "I Choose You"
@@ -65,6 +88,23 @@ const albums = [{
                 "Party 4 U",
                 "Anthems",
                 "Visions"
+            ]
+        }]
+    },
+    {
+        id: 3,
+        title: "The First Installment: The Great Descent into the Root System",
+        artist: "Francis Lastname",
+        year: 2026,
+        cover: "img/albums/the_first_installment_the_great_descent_into_the_root_system.png",
+        discs: [{
+            name: "Disc 1",
+            tracks: [
+                "Soil Displacement (Aperture)",
+                "Fibrous Entanglement",
+                "A Vascular Necrosis",
+                "Excavation of the Colliery",
+                "Underground"
             ]
         }]
     }
