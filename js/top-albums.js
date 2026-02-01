@@ -1,15 +1,15 @@
 const list = document.getElementById("top-albums");
 
 function renderTopAlbums() {
-  const ranked = albums
-    .map(album => {
-      const stats = getAlbumStats(album);
-      return { album, ...stats };
-    })
-    .filter(a => a.count > 0)
-    .sort((a, b) => b.avg - a.avg);
+    const ranked = albums
+        .map(album => {
+            const stats = getAlbumStats(album);
+            return { album, ...stats };
+        })
+        .filter(a => a.count > 0)
+        .sort((a, b) => b.avg - a.avg);
 
-  list.innerHTML = ranked.map((item, i) => `
+    list.innerHTML = ranked.map((item, i) => `
     <a href="album.html?id=${item.album.id}" class="top-album">
         <div class="top-album-left">
         <span class="top-album-rank">#${i + 1}</span>

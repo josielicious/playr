@@ -102,6 +102,22 @@ function getAlbumScore(album) {
     return scores.reduce((a, b) => a + b, 0) / scores.length;
 }
 
+function resetAlbumRating(albumId) {
+    if (!confirm('Reset all ratings for this album?')) return;
+    const album = albums.find(a => a.id == albumId);
+    if (!album) return;
+
+    album.discs.forEach((disc, d) => {
+        disc.tracks.forEach((_, t) => {
+            const key = `track_${albumId}_${d}_${t}`;
+            localStorage.removeItem(key);
+            localStorage.removeItem('interlude_' + key);
+        });
+    });
+
+    render();
+}
+
 function generateStars(key, rating, readonly = false) {
     const wrapperClass = `stars${readonly ? ' readonly' : ''}`;
     let html = `<div class="${wrapperClass}">`;
@@ -232,13 +248,26 @@ function render(searchQuery = "") {
 
     page.innerHTML = `
       <div class="album-view">
-        <img src="${album.cover}">
-        <h2>${album.title}</h2>
-        <p>${album.artist} • ${album.year}</p>
+        <div class="album-hero">
+          <img src="${album.cover}">
 
-        <h3>Album Rating</h3>
-        <div class="stars readonly">
-          ${generateStars("album_display_" + album.id, rating)}
+          <div class="album-right">
+            <div class="album-meta">
+              <h2>${album.title}</h2>
+              <p>${album.artist} • ${album.year}</p>
+
+              <div class="album-rating">
+                <h3>Album Rating</h3>
+                <div class="stars readonly">
+                    ${generateStars("album_display_" + album.id, rating)}
+                  </div>
+
+                  <button class="reset-rating" onclick="resetAlbumRating('${album.id}')" aria-label="Reset ratings">
+                    <i class="fa-solid fa-rotate-right"></i>
+                  </button>
+                </div>
+              </div>
+          </div>
         </div>
 
         <h3>Tracks</h3>
