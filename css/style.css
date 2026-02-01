@@ -261,6 +261,7 @@ h1 {
     grid-template-columns: 1fr 120px 40px;
     align-items: center;
     gap: 12px;
+    overflow: visible;
 }
 
 .track .stars {
@@ -482,4 +483,162 @@ mark {
 .reset-rating:hover {
     background: var(--hover);
     color: var(--text);
+}
+
+.dialog-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.dialog-modal.hidden {
+    display: none;
+}
+
+.dialog-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+}
+
+.dialog-box {
+    position: relative;
+    z-index: 10001;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    min-width: 300px;
+    max-width: 400px;
+    animation: dialog-pop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes dialog-pop {
+    0% {
+        transform: scale(0.85) translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.dialog-box h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: var(--text);
+}
+
+.dialog-box p {
+    margin: 0 0 20px 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.dialog-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.dialog-btn:hover {
+    background: var(--hover);
+}
+
+.dialog-btn.confirm {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 600;
+}
+
+.dialog-btn.confirm:hover {
+    background: #ffd600;
+}
+
+.track-title {
+    position: relative;
+    cursor: default;
+}
+
+.track-title.truncated {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.track-title.truncated:hover::after {
+    content: attr(data-full-title);
+    display: block;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    white-space: normal;
+    word-break: break-word;
+    z-index: 9999;
+    box-shadow: 0 8px 20px var(--shadow);
+    font-size: 14px;
+    max-width: 300px;
+    min-width: 150px;
+}
+
+.album-title {
+    position: relative;
+    cursor: default;
+}
+
+.album-title.truncated {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.album-title.truncated:hover::after {
+    content: attr(data-full-title);
+    display: block;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    white-space: normal;
+    word-break: break-word;
+    z-index: 9999;
+    box-shadow: 0 8px 20px var(--shadow);
+    font-size: 14px;
+    max-width: 300px;
+    min-width: 150px;
 }

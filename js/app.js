@@ -1,3 +1,46 @@
+class DialogManager {
+    constructor() {
+        this.modal = document.getElementById('dialog-modal');
+        this.titleEl = document.getElementById('dialog-title');
+        this.messageEl = document.getElementById('dialog-message');
+        this.cancelBtn = document.getElementById('dialog-cancel');
+        this.confirmBtn = document.getElementById('dialog-confirm');
+        this.resolve = null;
+
+        if (this.cancelBtn) {
+            this.cancelBtn.addEventListener('click', () => this.close(false));
+        }
+        if (this.confirmBtn) {
+            this.confirmBtn.addEventListener('click', () => this.close(true));
+        }
+
+        const backdrop = this.modal ? document.body.querySelector('.dialog-backdrop') : null;
+        if (backdrop) {
+            backdrop.addEventListener('click', () => this.close(false));
+        }
+    }
+
+    show(title, message) {
+        return new Promise((resolve) => {
+            this.resolve = resolve;
+            this.titleEl.textContent = title;
+            this.messageEl.textContent = message;
+            this.modal.classList.remove('hidden');
+            this.confirmBtn.focus();
+        });
+    }
+
+    close(result) {
+        this.modal.classList.add('hidden');
+        if (this.resolve) {
+            this.resolve(result);
+            this.resolve = null;
+        }
+    }
+}
+
+const dialogManager = new DialogManager();
+
 function userKey(key) {
     return `user_${currentUser}_${key}`;
 }
@@ -103,19 +146,22 @@ function getAlbumScore(album) {
 }
 
 function resetAlbumRating(albumId) {
-    if (!confirm('Reset all ratings for this album?')) return;
-    const album = albums.find(a => a.id == albumId);
-    if (!album) return;
+    dialogManager.show('Reset Ratings', 'Reset all ratings for this album?').then(confirmed => {
+        if (!confirmed) return;
 
-    album.discs.forEach((disc, d) => {
-        disc.tracks.forEach((_, t) => {
-            const key = `track_${albumId}_${d}_${t}`;
-            localStorage.removeItem(key);
-            localStorage.removeItem('interlude_' + key);
+        const album = albums.find(a => a.id == albumId);
+        if (!album) return;
+
+        album.discs.forEach((disc, d) => {
+            disc.tracks.forEach((_, t) => {
+                const key = `track_${albumId}_${d}_${t}`;
+                localStorage.removeItem(key);
+                localStorage.removeItem('interlude_' + key);
+            });
         });
-    });
 
-    render();
+        render();
+    });
 }
 
 function generateStars(key, rating, readonly = false) {
@@ -134,7 +180,6 @@ function generateStars(key, rating, readonly = false) {
         html += `<span class="star">${icon}`;
 
         if (!readonly) {
-            // left half = x.5, right half = x
             html += `<button class="hit" onclick="saveRating('${key}', ${i - 0.5})" aria-label="rate ${i - 0.5}"></button>`;
             html += `<button class="hit right" onclick="saveRating('${key}', ${i})" aria-label="rate ${i}"></button>`;
         }
@@ -181,6 +226,14 @@ function highlightMatch(text, query) {
         `<mark>${text.slice(index, index + q.length)}</mark>` +
         text.slice(index + q.length)
     );
+}
+
+function getTruncatedTrackHtml(trackName) {
+    const maxLength = 35;
+    if (trackName.length > maxLength) {
+        return `<span class="track-title truncated" data-full-title="${trackName.replace(/"/g, '&quot;')}">${trackName}</span>`;
+    }
+    return `<span class="track-title">${trackName}</span>`;
 }
 
 function render(searchQuery = "") {
@@ -280,7 +333,7 @@ function render(searchQuery = "") {
 
                   return `
                     <div class="track ${blocked ? "is-interlude" : ""}">
-                      <span class="track-title">${track}</span>
+                      ${getTruncatedTrackHtml(track)}
                       ${blocked ? "" : generateStars(key, getRating(key))}
                       <button class="interlude-toggle" onclick="toggleInterlude('${key}')">
                         <i class="fa-solid fa-ban"></i>
@@ -298,7 +351,7 @@ function render(searchQuery = "") {
 
                         return `
                           <div class="track ${blocked ? "is-interlude" : ""}">
-                            <span class="track-title">${track}</span>
+                            ${getTruncatedTrackHtml(track)}
                             ${blocked ? "" : generateStars(key, getRating(key))}
                             <button class="interlude-toggle" onclick="toggleInterlude('${key}')">
                               <i class="fa-solid fa-ban"></i>
