@@ -1,0 +1,13 @@
+{
+  "name": "playr",
+  "private": true,
+  "scripts": {
+    "vercel:dev": "vercel dev"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "vercel": "^50.32.5"
+  }
+}
